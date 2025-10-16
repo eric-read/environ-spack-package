@@ -28,8 +28,7 @@ class Environ(Package):
     simulations, in particular for applications in surface science and materials design. """
 
     homepage = "https://www.quantum-environ.org"
-    url = "https://github.com/environ-developers/Environ/releases/download/v3.0/Environ.tar.gz"
-
+    git = "https://github.com/environ-developers/Environ/releases/download/v3.0/Environ.tar.gz"
     maintainers("eric-read","olivieroandreussi", "JakobFilser")
     # See https://spdx.org/licenses/ for a list. Upon manually verifying
     # the license, set checked_by to your Github username.
