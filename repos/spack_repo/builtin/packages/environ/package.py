@@ -28,7 +28,9 @@ class Environ(Package):
     simulations, in particular for applications in surface science and materials design. """
 
     homepage = "https://www.quantum-environ.org"
-    git = "https://github.com/environ-developers/Environ/releases/download/v3.0/Environ.tar.gz"
+    url = "https://github.com/environ-developers/Environ/releases/download/v3.0/Environ.tar.gz"
+
+
     maintainers("eric-read","olivieroandreussi", "JakobFilser")
     # See https://spdx.org/licenses/ for a list. Upon manually verifying
     # the license, set checked_by to your Github username.
@@ -46,7 +48,7 @@ class Environ(Package):
         depends_on("amdfftw+openmp", when="^[virtuals=fftw-api] amdfftw")
         depends_on("openblas threads=openmp", when="^[virtuals=blas] openblas")
         depends_on("amdblis threads=openmp", when="^[virtuals=blas] amdblis")
-        depends_on("intel-mkl threads=openmp", when="^[virtuals=blas] intel-mkl")
+        depends_on("intel-oneapi-mkl threads=openmp", when="^[virtuals=blas] intel-oneapi-mkl")
         depends_on("armpl-gcc threads=openmp", when="^[virtuals=blas] armpl-gcc")
         depends_on("acfl threads=openmp", when="^[virtuals=blas] acfl")
     
