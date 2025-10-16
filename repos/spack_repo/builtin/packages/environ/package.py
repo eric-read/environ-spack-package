@@ -36,6 +36,7 @@ class Environ(Package):
     # the license, set checked_by to your Github username.
     license("GPL-2.0-only", checked_by="eric-read")
 
+    version("develop", branch="master")
     version("3.1", sha256="a143a028e243c2bdb0779e61478029d5f0c5ddfee07d7beda06200d677401893")
     version("3.0", sha256="95476a056801d7c4be6329e4593b2fceeedc773170c5e20aa707d7d58f8b8932")
 
@@ -86,7 +87,7 @@ class Environ(Package):
 class GenericBuilder(spack.build_systems.generic.GenericBuilder):
     def install(self, pkg, spec, prefix):
         prefix_path = prefix.bin if "@:3.0" in spec else prefix
-        options = ["-prefix={0}".format(prefix_path)
+        options = ["-prefix={0}".format(prefix_path)]
         
         # This additional flag is needed anytime the target architecture
         # does not match the host architecture, which results in a binary that
