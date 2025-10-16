@@ -82,7 +82,7 @@ class Environ(AutoToolsPackage):
         args = []
         return args
 
-class GenericBuilder(spack.build_systems.generic.GenericBuilder):
+class GenericBuilder(GenericBuilder):
     def install(self, pkg, spec, prefix):
         prefix_path = prefix.bin if "@:3.0" in spec else prefix
         options = ["-prefix={0}".format(prefix_path)]
