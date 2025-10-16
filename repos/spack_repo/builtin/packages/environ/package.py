@@ -19,12 +19,10 @@
 # See the Spack documentation for more information on packaging.
 # ----------------------------------------------------------------------------
 
-from spack.build_systems.generic import GenericBuilder
-
 from spack.package import *
 
 
-class Environ(Package):
+class Environ(AutoToolsPackage):
     """Environ is a computational library aimed at introducing environment effects to atomistic first-principles
     simulations, in particular for applications in surface science and materials design. """
 
