@@ -22,7 +22,7 @@
 from spack.package import *
 
 
-class Environ(AutoToolsPackage):
+class Environ(Package):
     """Environ is a computational library aimed at introducing environment effects to atomistic first-principles
     simulations, in particular for applications in surface science and materials design. """
 
