@@ -29,7 +29,7 @@ class Environ(Package):
 
     homepage = "https://www.quantum-environ.org"
     url = "https://github.com/environ-developers/Environ/releases/download/v3.0/Environ.tar.gz"
-
+    git = "https://github.com/environ-developers/Environ.git"
 
     maintainers("eric-read","olivieroandreussi", "JakobFilser")
     # See https://spdx.org/licenses/ for a list. Upon manually verifying
