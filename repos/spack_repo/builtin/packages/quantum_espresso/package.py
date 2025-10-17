@@ -230,15 +230,19 @@ class QuantumEspresso(CMakePackage, Package):
 
         # EPW doesn't gets along well with OpenMPI 2.x.x
         conflicts("^openmpi@2.0.0:2", msg="OpenMPI version incompatible with EPW")
-
     variant(
         "environ",
         default=False,
-        when="build_system=generic",
         description="Enables support for introducing environment effects "
         "into atomistic first-principles simulations."
         "See http://quantum-environ.org/about.html",
     )
+    with when("+environ"):
+        conflicts("@6.5:7.0", msg="6.4.x through 7.0 do not support Environ")
+        with when("@7.1:"):
+            depends_on('environ@3.0:')
+        with when("@7.3.1:"):
+            depends_on('environ@3.1:')
 
     variant(
         "gipaw",
@@ -297,8 +301,6 @@ class QuantumEspresso(CMakePackage, Package):
     conflicts(
         "@5.3:", when="target=a64fx %gcc@8", msg="Internal compiler error with gcc8 and a64fx"
     )
-
-    conflicts("@6.5:", when="+environ", msg="6.4.x is the latest QE series supported by Environ")
 
     conflicts(
         "@:7.3.0",
@@ -496,6 +498,10 @@ class CMakeBuilder(cmake.CMakeBuilder):
 
         if plugins:
             cmake_args.append(self.define("QE_ENABLE_PLUGINS", plugins))
+
+        if "+environ" in spec:
+            cmake_args.append(self.define("QE_ENABLE_ENVIRON", True))
+            cmake_args.append(self.define("ENVIRON_ROOT",spec['environ'].prefix))
         return cmake_args
 
 
@@ -649,6 +655,9 @@ class GenericBuilder(generic.GenericBuilder):
                     ]
                 )
 
+        if "+environ" in spec and spec.satisfies("@7.1:"):
+            options.append("--with-environ={0}".format(spec["environ"].prefix))
+
         configure(*options)
 
         # Filter file must be applied after configure executes
@@ -676,17 +685,20 @@ class GenericBuilder(generic.GenericBuilder):
             make("gipaw", parallel=False)
 
         if "+environ" in spec:
-            addsonpatch = Executable("./install/addsonpatch.sh")
-            environpatch = Executable("./Environ/patches/environpatch.sh")
-            makedeps = Executable("./install/makedeps.sh")
+            if spec.satisfies("@:6.4"):
+                addsonpatch = Executable("./install/addsonpatch.sh")
+                environpatch = Executable("./Environ/patches/environpatch.sh")
+                makedeps = Executable("./install/makedeps.sh")
 
-            addsonpatch("Environ", "Environ/src", "Modules", "-patch")
+                addsonpatch("Environ", "Environ/src", "Modules", "-patch")
 
-            environpatch("-patch")
+                environpatch("-patch")
 
-            makedeps()
+                makedeps()
 
-            make("pw", parallel=parallel_build_on)
+                make("pw", parallel=parallel_build_on)
+            elif spec.satisfies("@7.1:"):
+                make("pw", parallel=parallel_build_on)
 
         if "platform=darwin" in spec:
             mkdirp(prefix.bin)
