@@ -62,9 +62,9 @@ class Environ(Package):
     depends_on("c", type="build")
     depends_on("fortran", type="build")
     depends_on("gmake", type="build")
-    
-    requires("^[virtuals=fftw-api] intel-oneapi-mkl", when="^[virtuals=lapack] intel-oneapi-mkl")
-    requires("^[virtuals=lapack] intel-oneapi-mkl", when="^[virtuals=fftw-api] intel-oneapi-mkl")
+
+    requires("^[virtuals=fftw-api] intel-oneapi-mkl", when="^[virtuals=blas] intel-oneapi-mkl")
+    requires("^[virtuals=blas] intel-oneapi-mkl", when="^[virtuals=fftw-api] intel-oneapi-mkl")
 
     # CONFLICTS SECTION
     # Omitted for now due to concretizer bug
@@ -138,7 +138,7 @@ class GenericBuilder(GenericBuilder):
         # you need to pass it in the FFTW_INCLUDE and FFT_LIBS directory.
         # QE supports an internal FFTW2, but only an external FFTW3 interface.
 
-        is_using_intel_libraries = spec["lapack"].name in INTEL_MATH_LIBRARIES
+        is_using_intel_libraries = spec["blas"].name in INTEL_MATH_LIBRARIES
         if is_using_intel_libraries:
             # A seperate FFT library is not needed when linking against MKL
             options.append("FFTW_INCLUDE={0}".format(join_path(env["MKLROOT"], "include/fftw")))
@@ -166,7 +166,7 @@ class GenericBuilder(GenericBuilder):
 
         # For many Spack packages, lapack.libs = blas.libs, hence it will
         # appear twice in in link line but this is harmless
-        lapack_blas = spec["lapack"].libs + spec["blas"].libs
+        lapack_blas = spec["blas"].libs
 
         if not is_using_intel_libraries:
             options.append("BLAS_LIBS={0}".format(lapack_blas.ld_flags))
